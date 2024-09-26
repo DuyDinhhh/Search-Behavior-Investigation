@@ -37,6 +37,7 @@ def process_logsearch(startdate, enddate):
     return df
 
 def ranking_data(process_result):
+    keyword_counts = process_result.groupBy("user_id", "keyword").count()
     window = Window.partitionBy("user_id").orderBy(col('keyword').desc())
     rank_result = process_result.withColumn('RANK', rank().over(window))
     rank_result = rank_result.filter(rank_result.RANK == '1').distinct()
